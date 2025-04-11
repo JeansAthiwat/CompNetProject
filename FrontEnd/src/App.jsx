@@ -16,6 +16,7 @@ function App() {
     <Router>
       <Routes>
         <Route path="/" element={<Home />} />
+        <Route path="/chat" element={<ChatRoom roomId={0} />} />
       </Routes>
     </Router>
   );
