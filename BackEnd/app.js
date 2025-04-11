@@ -6,6 +6,7 @@ import session from "express-session";
 import cookieParser from "cookie-parser";
 import dotenv from "dotenv";
 import { setUpSocket } from "./socket.js";
+import router from "./router.js";
 
 dotenv.config();
 
@@ -27,6 +28,8 @@ app.use(
     saveUninitialized: true,
   })
 );
+
+app.use('/api',router)
 
 const server = http.createServer(app);
 

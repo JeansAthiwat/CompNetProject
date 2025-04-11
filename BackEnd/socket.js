@@ -3,7 +3,8 @@ import dotenv from 'dotenv';
 
 dotenv.config();
 
-const onlineUsers = new Map();
+export const onlineUsers = new Map();
+export const userToSocket = new Map();
 
 export const setUpSocket = (server) => {
     const io = new Server(server, {
@@ -22,15 +23,19 @@ export const setUpSocket = (server) => {
   
       socket.username = username;
       socket.avatarIndex = socket.handshake.auth.avatarIndex;
+      socket.userId = socket.handshake.auth.userId
       next();
     });
 
     io.on("connection", (socket) => {
+      const userId = socket.userId
       const username = socket.username;
       const avatarIndex = socket.avatarIndex
+      const socketId = socket.id
 
       // Track the user
-      onlineUsers.set(socket.id, {username,avatarIndex});
+      userToSocket.set(userId, {username,avatarIndex,socketId});
+      onlineUsers.set(socketId, {username,avatarIndex,userId});
       console.log(`${username} connected`);
 
       // Broadcast to others
@@ -39,12 +44,21 @@ export const setUpSocket = (server) => {
         username,
       });
         
-      socket.on("message", () => {
-
+      socket.on("private message", ({sender, reciever, text}) => {
+        // console.log(sender)
+        const senderData = userToSocket.get(sender)
+        const recieverData = userToSocket.get(reciever)
+        console.log(recieverData)
+        io.to(recieverData.socketId).emit("private message", {
+          sender: {id:sender ,name:senderData.username, avatarIndex:senderData.avatarIndex},
+          text,
+          });
       });
   
       socket.on("disconnect", () => {
-
+        onlineUsers.delete(socket.id);
+        socket.broadcast.emit("user:leaved");
+        console.log(username,"disconnecting")
       });
     });
     

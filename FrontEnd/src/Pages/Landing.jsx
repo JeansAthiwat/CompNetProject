@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import { useSocket } from "../Contexts/SocketContext";
+import { getSocket, disconnectSocket } from "../socket.js";
+import { v4 as uuidv4 } from 'uuid';
 
 function Landing() {
   const [name, setName] = useState(() => sessionStorage.getItem("name") || "");
@@ -10,7 +11,10 @@ function Landing() {
   });
 
   const navigate = useNavigate();
-  const { connectSocket } = useSocket();
+
+  useEffect(() => {
+    disconnectSocket()
+  }, [])
 
   useEffect(() => {
     sessionStorage.setItem("name", name);
@@ -20,10 +24,12 @@ function Landing() {
     sessionStorage.setItem("avatarIndex", avatarIndex);
   }, [avatarIndex]);
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     if (name.trim()) {
-      connectSocket(name, avatarIndex)
+      const userId = uuidv4()
+      sessionStorage.setItem("uid",userId)
+      getSocket(userId, name, avatarIndex)
 
       navigate("/home", {
         state: {
