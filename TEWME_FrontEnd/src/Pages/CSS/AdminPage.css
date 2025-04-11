@@ -1,0 +1,120 @@
+/* Admin Panel Container */
+.admin-container {
+  max-width: 900px;
+  margin: 40px auto;
+  padding: 25px;
+  background: white;
+  border-radius: 12px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+/* Header */
+.admin-container h1 {
+  text-align: center;
+  font-size: 28px;
+  font-weight: bold;
+  color: #333;
+  margin-bottom: 25px;
+}
+
+/* Table Styling */
+.tutors-table {
+  width: 100%;
+  border-collapse: collapse;
+  border-radius: 8px;
+  overflow: hidden;
+  margin-bottom: 20px;
+}
+
+/* Table Header */
+.tutors-table th {
+  background-color: #f4f4f4;
+  font-size: 16px;
+  font-weight: bold;
+  color: #333;
+  padding: 12px;
+  text-align: left;
+}
+
+/* Table Rows */
+.tutors-table td {
+  padding: 12px;
+  font-size: 15px;
+  border-bottom: 1px solid #ddd;
+}
+
+/* Alternate row colors */
+.tutors-table tbody tr:nth-child(odd) {
+  background-color: #f9f9f9;
+}
+
+.tutors-table tbody tr:nth-child(even) {
+  background-color: #ffffff;
+}
+
+/* Table Hover Effect */
+.tutors-table tbody tr:hover {
+  background-color: #f1f1f1;
+}
+
+/* Button Container */
+.action-buttons {
+  display: flex;
+  gap: 8px;
+  margin:0 10px 0 0;
+}
+
+/* Verify Button */
+.verify-btn {
+  background-color: #4caf50;
+  color: white;
+  border: none;
+
+  padding: 8px 14px;
+  font-size: 14px;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: all 0.3s ease-in-out;
+}
+
+.verify-btn:hover {
+  background-color: #3e8e41;
+  transform: scale(1.05);
+}
+
+/* Reject Button */
+.reject-btn {
+  background-color: #f44336;
+  color: white;
+  border: none;
+  padding: 8px 14px;
+  font-size: 14px;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: all 0.3s ease-in-out;
+}
+
+.reject-btn:hover {
+  background-color: #d32f2f;
+  transform: scale(1.05);
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .admin-container {
+      width: 90%;
+      padding: 20px;
+  }
+
+  .tutors-table {
+      display: block;
+      overflow-x: auto;
+      white-space: nowrap;
+  }
+
+  .verify-btn,
+  .reject-btn {
+      font-size: 12px;
+      padding: 6px 10px;
+  }
+}

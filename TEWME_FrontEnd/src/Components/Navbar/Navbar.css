@@ -1,0 +1,170 @@
+.navbar {
+    display: flex;
+    justify-content: space-around;
+    justify-items:center;
+    min-height: 13vh;
+    /* padding: 16px 30px; */
+    box-shadow: 0 1px 3px -2px black;
+    position: fixed;
+    top: 0vh;
+    left: 0vw;
+    right: 0vw;
+    background-color: white;
+    z-index: 1000;
+}
+
+/* ปรับตำแหน่ง Arrow Left ให้อยู่ใกล้ TewMe มากขึ้น */
+.nav-left {
+    display: flex;
+    align-items: center;
+    gap: 30px;
+    margin-left: -35px;
+  }
+
+.dummy-elem {
+    min-height: 13vh;
+}
+
+.navbar * {
+    top:1vh;
+}
+
+.nav-logo p {
+    color: #171717;
+    font-size: 3.5em;
+    font-weight: 800;
+    font-family: 'Agu Display', sans-serif;
+    position: relative;
+}
+
+.nav-menu {
+    /* top:2vh; */
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+    list-style: none;
+    gap: 50px;
+    color: #626262;
+    font-size: 20px;
+    font-weight: 500;
+    position: relative
+}
+
+.nav-menu li {
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 3px;
+    cursor: pointer;
+}
+
+.nav-menu hr {
+    border: none;
+    width: 80%;
+    height: 3px;
+    border-radius: 10px;
+    background: #ff4141;
+}
+
+
+.nav-login-profile button {
+    width: 157px;
+    height: 58px;
+    outline: none;
+    border: 1px solid #7a7a7a;
+    border-radius: 75px;
+    color: #515151;
+    font-size: 20px;
+    font-weight: 500;
+    background: white;
+    cursor: pointer;
+}
+
+.nav-login-profile button:active {
+    background: #f3f3f3;
+}
+
+
+
+
+
+.nav-login-profile {
+    display: flex;
+    align-items: center;
+    gap: 15px; /* ✅ Adds proper spacing between logout button & profile picture */
+}
+
+/* 🔹 Fix Logout Button */
+.nav-login-profile .logout-btn {
+    background: linear-gradient(135deg, #ff4b4b, #ff1414);
+    color: white;
+    border: none;
+    padding: 8px 18px; /* ✅ Reduced padding */
+    font-size: 16px; /* ✅ Slightly smaller font */
+    font-weight: 600;
+    border-radius: 25px; /* ✅ Slightly more rounded */
+    cursor: pointer;
+    transition: all 0.3s ease-in-out;
+    box-shadow: 0 2px 5px rgba(255, 65, 65, 0.3);
+}
+
+/* 🔹 Hover & Click Effects */
+.nav-login-profile .logout-btn:hover {
+    background: linear-gradient(135deg, #ff2d2d, #d60000);
+    transform: scale(1.05);
+    box-shadow: 0 4px 10px rgba(255, 65, 65, 0.5);
+}
+
+.nav-login-profile .logout-btn:active {
+    transform: scale(0.97);
+}
+
+/* 🔹 Fix Profile Picture Alignment */
+.nav-login-profile img {
+    width: 45px; /* ✅ Slightly smaller */
+    height: 45px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 2px solid #ccc;
+    transition: transform 0.2s ease-in-out;
+}
+
+/* 🔹 Hover Effect for Profile Picture */
+.nav-login-profile img:hover {
+    transform: scale(1.05);
+}
+  
+.arrow-icon {
+    cursor: pointer;
+    font-size: 42px;
+    color: #333;
+    background: rgba(0, 0, 0, 0.05);
+    padding: 14px;
+    border-radius: 50%;
+    transition: transform 0.2s ease, color 0.2s ease;
+    margin-left: 10px; /* ชิดซ้าย */
+    margin-top: 10px; /* เลื่อนลงมาหน่อย */
+  }
+  
+  .arrow-icon:hover {
+    transform: scale(1.2);
+    color: #000;
+    background: rgba(0, 0, 0, 0.15);
+  }
+  
+  /* Responsive สำหรับแท็บเล็ต */
+  @media (max-width: 768px) {
+    .arrow-icon {
+      font-size: 38px;
+      padding: 12px;
+    }
+  }
+  
+  /* Responsive สำหรับมือถือ */
+  @media (max-width: 480px) {
+    .arrow-icon {
+      font-size: 34px;
+      padding: 10px;
+    }
+  }
+  

@@ -1,0 +1,181 @@
+/* 🔹 Form Container */
+.class-form-container {
+  max-width: 800px;
+  margin: 3rem auto;
+  padding: 2rem;
+  background: white;
+  border-radius: 12px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+}
+
+/* 🔹 Title Styling */
+.class-form-container h2 {
+  color: #2c3e50;
+  margin-bottom: 1.5rem;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 1.8rem;
+  font-weight: bold;
+}
+
+/* 🔹 Form Group (Label + Input) */
+.form-group {
+  margin-bottom: 1.5rem;
+}
+
+.form-group label {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 0.5rem;
+  color: #34495e;
+  font-weight: 600;
+}
+
+/* 🔹 Inputs, Textareas, & Select Styling */
+input, textarea, select {
+  width: 100%;
+  padding: 0.8rem;
+  border: 2px solid #dfe6e9;
+  border-radius: 8px;
+  font-size: 1rem;
+  transition: border-color 0.3s ease;
+}
+
+input:focus, textarea:focus, select:focus {
+  border-color: #3498db;
+  outline: none;
+  background: #f9f9f9;
+}
+
+/* 🔹 Form Grid (For Multi-Column Layout) */
+.form-row {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 1.5rem;
+  margin-bottom: 1.5rem;
+}
+
+/* 🔹 Video-Based Course Checkbox */
+.video-course-checkbox {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 1rem;
+  color: #34495e;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+/* 🔹 Checkbox Styling */
+.video-course-checkbox input,
+.video-checkbox-input {
+  width: 18px;
+  height: 18px;
+  accent-color: #3498db;
+}
+
+/* 🔹 Disabled State (When Video-Based Course is selected) */
+.datetime-input:disabled {
+  background: #f1f1f1;
+  cursor: not-allowed;
+  color: #a0a0a0;
+  border-color: #dcdcdc;
+}
+
+/* 🔹 Tags Section */
+.tag-input {
+  display: flex;
+  gap: 10px;
+  margin-bottom: 10px;
+}
+
+.add-tag-btn {
+  background: #3498db;
+  color: white;
+  border: none;
+  padding: 0.5rem 1rem;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: background 0.3s ease;
+}
+
+.add-tag-btn:hover {
+  background: #2980b9;
+}
+
+/* 🔹 Tags Container */
+.tags-container {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+/* 🔹 Individual Tags */
+.tag {
+  background: #3498db15;
+  color: #3498db;
+  padding: 0.4rem 0.8rem;
+  border-radius: 20px;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 0.9rem;
+}
+
+.tag button {
+  background: none;
+  border: none;
+  color: #e74c3c;
+  cursor: pointer;
+  font-size: 1.1rem;
+  line-height: 1;
+}
+
+/* 🔹 Submit Button */
+.submit-btn {
+  background: #27ae60;
+  color: white;
+  padding: 1rem 2rem;
+  border: none;
+  border-radius: 8px;
+  font-size: 1.1rem;
+  cursor: pointer;
+  width: 100%;
+  transition: background 0.3s ease;
+}
+
+.submit-btn:hover {
+  background: #219a52;
+}
+
+/* 🔹 Error Input Styling */
+.error input, .error select, .error textarea {
+  border-color: #e74c3c;
+}
+
+/* 🔹 Error Message */
+.error-message {
+  color: #e74c3c;
+  font-size: 0.9rem;
+  margin-top: 0.5rem;
+  display: block;
+}
+
+/* 🔹 Responsive Design */
+@media (max-width: 768px) {
+  .class-form-container {
+      width: 90%;
+      padding: 1.5rem;
+  }
+
+  .form-row {
+      grid-template-columns: 1fr;
+  }
+
+  .submit-btn {
+      font-size: 1rem;
+      padding: 0.8rem;
+  }
+}
