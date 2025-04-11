@@ -7,11 +7,9 @@ import Landing from "./Pages/Landing";
 function App() {
   return (
     <Router>
-      <h2>test</h2>
       <Routes>
         <Route path="/" element={<Landing />} />
-        <Route path="/home" element={<Home />} />
-        <Route path="/chat" element={<ChatRoom roomId={0} />} />
+        {/* <Route path="/home" element={<Home />} /> */}
       </Routes>
     </Router>
   );
