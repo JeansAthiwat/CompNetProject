@@ -34,14 +34,14 @@ function Landing() {
 
   return (
     <div className="w-screen h-screen flex flex-col items-center justify-center bg-[#fef6d7]">
-      <h2 className="text-4xl mb-6 text-[#7d5a50]">Blind Date</h2>
+      <h2 className="text-8xl font-bold mb-6 text-[#7d5a50]">Blind Date</h2>
       <form onSubmit={handleSubmit} className="flex flex-col items-center">
         <input
           type="text"
           value={name}
           onChange={(e) => setName(e.target.value)}
           placeholder="Enter your name"
-          className="px-6 py-2 text-lg border-2 border-[#7d5a50] rounded-md mb-4 w-72 text-center"
+          className="px-6 py-2 text-lg border-2 border-[#7d5a50] rounded-md mb-4 w-144 text-center bg-white"
         />
         <div className="flex gap-4 mb-4">
           {avatarOptions.map((i) => (
@@ -58,7 +58,7 @@ function Landing() {
         </div>
         <button
           type="submit"
-          className="px-6 py-2 rounded-full bg-[#d5bfa3] border-2 border-[#7d5a50] text-[#333] hover:bg-[#c6a98f] transition"
+          className="py-2 px-4 rounded-full bg-primary-stroke border-2 border-[#7d5a50] text-white hover:brightness-70 transition"
         >
           Start Chatting
         </button>
