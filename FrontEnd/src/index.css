@@ -9,17 +9,9 @@
   box-sizing: border-box;
 } */
 
-<<<<<<< HEAD
-body {
-  font-family: 'Handlee', sans-serif;
-  background-color: #fff9db;
-  color: #846358;
-  @apply h-full w-full;
-}
 
 
-=======
->>>>>>> 46828be8a69bd581a81dddfe8c0a94d5d051c39d
+
 /* code {
   font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
   monospace;
