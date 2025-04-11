@@ -10,7 +10,6 @@ function App() {
     <Router>
       <Routes>
         <Route path="/" element={<Landing />} />
-        <Route path="/" element={<Home />} />
         <Route path="/chat" element={<ChatRoom />} />
       </Routes>
     </Router>
