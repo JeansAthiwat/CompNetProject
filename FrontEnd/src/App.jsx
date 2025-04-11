@@ -1,11 +1,12 @@
 // App.jsx
 import React from "react";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
+import "./index.css"
 
 function Home() {
   return (
     <div>
-      <h2>Home Page</h2>
+      <h2 className='text-primary-stroke font-handlee'>Home Page</h2>
     </div>
   );
 }
