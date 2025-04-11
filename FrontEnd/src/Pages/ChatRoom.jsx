@@ -3,7 +3,7 @@ import { useNavigate } from "react-router-dom"
 
 const ChatRoom = () => {
     const navigate = useNavigate()
-    const [messages, setMessages] = useState([{"sender":"anonymous user", "text": "ello"}])
+    const [messages, setMessages] = useState([{"sender":{"name":"anonymous", "avatarIndex":3}, "text": "ello"}])
     const inputRef = useRef()
     const chatBottomRef = useRef()
 
@@ -16,9 +16,9 @@ const ChatRoom = () => {
     }
 
     const sendMsg = () => {
-        const sender = sessionStorage.getItem("name") || "anonymous user"
+        const senderName = sessionStorage.getItem("name") || "anonymous user"
         const text = inputRef.current.value
-        setMessages([...messages, {sender, text}])
+        setMessages([...messages, {"sender":{"name":senderName, "avatarIndex":sessionStorage.getItem("avatarIndex")}, text}])
         inputRef.current.value = ""
         chatBottomRef.current.scrollIntoView()
     }
@@ -31,18 +31,31 @@ const ChatRoom = () => {
                     <h2 className="pl-2">Gooners (150)</h2>
                 </div>
 
-                <div className="chat-body w-[80vw] grow py-5 pl-15 overflow-y-scroll">
+                <div className="chat-body w-[80vw] grow py-5 pr-5 pl-15 overflow-y-scroll scroll-smooth flex flex-col">
                     {
-                        messages.map((msg,index) =>  
+                        messages.map((msg,index) => 
+                            msg.sender.name == sessionStorage.getItem("name") ?
+                            <div className="message-item relative flex items-end my-2 ml-auto" key={index}>
+                                {/* Message bubble */}
+                                <div className="bg-secondary-bg py-2 px-4 rounded-2xl h-fit w-fit font-bold text-xl mb-2">
+                                    {msg.text}
+                                </div>
+                            </div>
+                            :
                             <div className="message-item relative flex items-end mt-3 mb-9" key={index}>
                                 <div className="sender flex flex-col items-start mr-3 relative">
                                     {/* Sender name floating above */}
                                     <div className="pf-name absolute -top-6 left-0 text-lg font-semibold whitespace-nowrap">
-                                    {msg.sender}
+                                    {msg.sender.name}
                                     </div>
                                     
                                     {/* Avatar */}
-                                    <div className="pf-img w-[4rem] h-[4rem] bg-green-100 rounded-full mt-2"></div>
+                                    <div className={`pf-img w-[4rem] h-[4rem] rounded-full mt-2 overflow-hidden`}>
+                                        <img
+                                            src={`/avatars/avatar${msg.sender.avatarIndex}.jpg`}
+                                            alt={`Avatar ${msg.sender.avatarIndex}`}
+                                        />
+                                    </div>
                                 </div>
 
                                 {/* Message bubble */}
