@@ -10,6 +10,8 @@ function App() {
       <h2>test</h2>
       <Routes>
         <Route path="/" element={<Landing />} />
+        <Route path="/home" element={<Home />} />
+        <Route path="/chat" element={<ChatRoom roomId={0} />} />
       </Routes>
     </Router>
   );
