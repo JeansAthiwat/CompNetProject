@@ -1,4 +1,4 @@
-@import url('https://fonts.googleapis.com/css2?family=Handlee&display=swap');
+@import url("https://fonts.googleapis.com/css2?family=Handlee&display=swap");
 @import "tailwindcss";
 
 /* * {
@@ -9,6 +9,7 @@
   box-sizing: border-box;
 } */
 
+<<<<<<< HEAD
 body {
   font-family: 'Handlee', sans-serif;
   background-color: #fff9db;
@@ -17,14 +18,27 @@ body {
 }
 
 
+=======
+>>>>>>> 46828be8a69bd581a81dddfe8c0a94d5d051c39d
 /* code {
   font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
-    monospace;
-} */
+  monospace;
+  } */
 
 @theme {
   --color-primary-bg: #fff9db;
   --color-primary-stroke: #846358;
   --color-secondary-bg: #ded2ad;
-  --font-handlee: "Handlee", sans-serif
+  --font-handlee: "Handlee", sans-serif;
+}
+
+body {
+  margin: 0;
+  font-family: "Handlee", -apple-system, BlinkMacSystemFont, "Segoe UI",
+    "Roboto", "Oxygen", "Ubuntu", "Cantarell", "Fira Sans", "Droid Sans",
+    "Helvetica Neue", sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  background-color: #fff9db;
+  color: #846358;
 }
