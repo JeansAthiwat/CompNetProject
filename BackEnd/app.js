@@ -4,13 +4,12 @@ import http from "http";
 import cors from "cors";
 import session from "express-session";
 import cookieParser from "cookie-parser";
-import { Server } from "socket.io";
 import dotenv from "dotenv";
+import { setUpSocket } from "./socket.js";
 
 dotenv.config();
 
 const app = express();
-const server = http.createServer(app);
 
 // ✅ Basic middleware
 app.use(
@@ -29,31 +28,9 @@ app.use(
   })
 );
 
-// ✅ Sample endpoint (test)
-app.get("/", (req, res) => {
-  res.send("🚀 Backend is running");
-});
+const server = http.createServer(app);
 
-// ✅ Socket.IO setup
-const io = new Server(server, {
-  cors: {
-    origin: "http://localhost:3000",
-    methods: ["GET", "POST"],
-  },
-});
-
-io.on("connection", (socket) => {
-  console.log("✅ New client connected:", socket.id);
-
-  socket.on("chat message", (msg) => {
-    console.log("💬 Message:", msg);
-    io.emit("chat message", msg); // Broadcast to all clients
-  });
-
-  socket.on("disconnect", () => {
-    console.log("❌ Client disconnected:", socket.id);
-  });
-});
+setUpSocket(server)
 
 // ✅ Start server
 const PORT = process.env.PORT || 5000;
