@@ -1,42 +1,29 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { useNavigate } from "react-router-dom";
-import { getSocket, disconnectSocket } from "../socket.js";
-import { v4 as uuidv4 } from 'uuid';
+import axios from 'axios'
 
-function Landing() {
-  const [name, setName] = useState(() => sessionStorage.getItem("name") || "");
-  const [avatarIndex, setAvatarIndex] = useState(() => {
-    const saved = sessionStorage.getItem("avatarIndex");
-    return saved !== null ? Number(saved) : 0;
-  });
+function Profile() {
+  const displayNameRef = useRef()
+  const [avatarIndex, setAvatarIndex] = useState(() => Number(localStorage.getItem('avatarIndex')) || 0);
 
   const navigate = useNavigate();
 
-  useEffect(() => {
-    disconnectSocket()
-  }, [])
-
-  useEffect(() => {
-    sessionStorage.setItem("name", name);
-  }, [name]);
-
-  useEffect(() => {
-    sessionStorage.setItem("avatarIndex", avatarIndex);
-  }, [avatarIndex]);
-
   const handleSubmit = async (e) => {
     e.preventDefault();
-    if (name.trim()) {
-      const userId = uuidv4()
-      sessionStorage.setItem("uid",userId)
-      getSocket(userId, name, avatarIndex)
-
-      navigate("/home", {
-        state: {
-          name,
-          avatarIndex,
-        },
-      });
+    if (displayNameRef.current.value.trim()) {
+      const response = axios.put('http://localhost:39189/user', {
+        displayName:displayNameRef.current.value,
+        avatarIndex
+      }, {
+        headers: {
+          authorization: `Bearer ${localStorage.getItem('token')}`
+        }
+      })
+      console.log(response.data)
+      localStorage.setItem('displayName', displayNameRef.current.value)
+      localStorage.setItem('avatarIndex', avatarIndex)
+      
+      navigate("/home")
     }
   };
 
@@ -48,9 +35,8 @@ function Landing() {
       <form onSubmit={handleSubmit} className="flex flex-col items-center">
         <input
           type="text"
-          value={name}
-          onChange={(e) => setName(e.target.value)}
-          placeholder="Enter your name"
+          ref={displayNameRef}
+          defaultValue={localStorage.getItem("displayName") || ""}
           className="px-6 py-2 text-lg border-2 border-[#7d5a50] rounded-md mb-4 w-144 text-center bg-white"
         />
         <div className="flex gap-4 mb-4">
@@ -77,4 +63,4 @@ function Landing() {
   );
 }
 
-export default Landing;
+export default Profile;

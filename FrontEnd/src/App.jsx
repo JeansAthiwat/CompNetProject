@@ -2,16 +2,20 @@
 import React, { useEffect, useState } from "react";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import "./index.css";
-import Landing from "./Pages/Landing";
+import Profile from "./Pages/Profile.jsx";
 import ChatRoom from "./Pages/ChatRoom.jsx"
 import Home from "./Pages/Home.jsx";
+import Registrar from "./Pages/Registrar.jsx";
+import LoginPage from "./Pages/LoginPage.jsx";
 
 function App() {
   return (
     <>
       <Router>
         <Routes>
-          <Route path="/" element={<Landing />} />
+          <Route path="/login" element={<LoginPage />} />
+          <Route path="/registrar" element={<Registrar />} />
+          <Route path="/profile" element={<Profile />} />
           <Route path="/home" element={<Home />} />
           <Route path="/chat" element={<ChatRoom />} />
         </Routes>
