@@ -1,4 +1,5 @@
 import User from '../model/userModel.js'
+import { onlineUsers } from '../socket.js';
 
 export const getUser = async (req, res) => {
     try {
@@ -44,5 +45,19 @@ export const getUser = async (req, res) => {
     } catch (err) {
       console.error(err);
       return res.status(500).json({ message: 'Server error', error: err.message });
+    }
+  }
+
+  export const getOnlineUsers = (req,res) => {
+    try{
+      if (onlineUsers)
+        res.status(201).json({success:true, users:Array.from(onlineUsers.entries()).map(([uid, user]) => ({
+          uid,
+          ...user,
+        }))})
+      else
+        res.status(500).json({success:false, msg:"Internal server error."})
+    } catch(err) {
+      res.status(500).json({success:false, msg:"Internal server error."})
     }
   }

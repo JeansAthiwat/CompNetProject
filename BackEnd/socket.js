@@ -1,10 +1,11 @@
 import { Server } from "socket.io";
 import dotenv from 'dotenv';
+import jwt from 'jsonwebtoken'
+import Message from './model/messageModel.js'
 
 dotenv.config();
 
 export const onlineUsers = new Map();
-export const userToSocket = new Map();
 
 export const setUpSocket = (server) => {
     const io = new Server(server, {
@@ -15,50 +16,55 @@ export const setUpSocket = (server) => {
       }); // ✅ Attach Socket.IO
 
     io.use((socket, next) => {
-      const username = socket.handshake.auth.username;
-
-      if (!username) {
-        return next(new Error("invalid username"));
+      const token = socket.handshake.auth.token;
+      try {
+        const { uid } = jwt.verify(token, process.env.JWT_SECRET);
+        socket.uid = uid;
+        socket.displayName = socket.handshake.auth.displayName;
+        socket.avatarIndex = socket.handshake.auth.avatarIndex;
+        next();
+      } catch (err) {
+        return next(new Error("Authentication error"));
       }
-  
-      socket.username = username;
-      socket.avatarIndex = socket.handshake.auth.avatarIndex;
-      socket.userId = socket.handshake.auth.userId
-      next();
     });
 
     io.on("connection", (socket) => {
-      const userId = socket.userId
-      const username = socket.username;
+      const uid = socket.uid
+      const displayName = socket.displayName;
       const avatarIndex = socket.avatarIndex
       const socketId = socket.id
 
       // Track the user
-      userToSocket.set(userId, {username,avatarIndex,socketId});
-      onlineUsers.set(socketId, {username,avatarIndex,userId});
-      console.log(`${username} connected`);
+      onlineUsers.set(uid, {displayName,avatarIndex,socketId});
+      console.log(`${displayName} connected`);
 
       // Broadcast to others
       socket.broadcast.emit("user:joined", {
-        id: socket.id,
-        username,
+        sid: socket.id,
+        uid
       });
         
-      socket.on("private message", ({sender, reciever, text}) => {
-        // console.log(sender)
-        const senderData = userToSocket.get(sender)
-        const recieverData = userToSocket.get(reciever)
-        console.log(recieverData)
-        io.to(recieverData.socketId).emit("private message", {
-          sender: {id:sender ,name:senderData.username, avatarIndex:senderData.avatarIndex},
-          text,
-          });
+      socket.on("private message", async ({cid, sender, reciever, text}) => {
+        // console.log(cid, sender, reciever, text)
+        
+        const newMssg = new Message({conversationId:cid, sender, text})
+        await newMssg.save()
+        io.to(onlineUsers.get(reciever).socketId).emit('private message', {
+          sender:{displayName, avatarIndex}, text
+        })
+        // const senderData = userToSocket.get(sender)
+        // const recieverData = userToSocket.get(reciever)
+        // console.log(recieverData)
+        // io.to(recieverData.socketId).emit("private message", {
+        //   sender: {id:sender ,name:senderData.username, avatarIndex:senderData.avatarIndex},
+        //   text,
+        //   });
       });
   
       socket.on("disconnect", () => {
-        onlineUsers.delete(socket.id);
+        onlineUsers.delete(uid);
         socket.broadcast.emit("user:leaved");
-        console.log(username,"disconnecting")
+        console.log(displayName,"disconnecting")
       });
     });
     

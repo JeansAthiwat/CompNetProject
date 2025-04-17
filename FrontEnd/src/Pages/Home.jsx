@@ -2,29 +2,35 @@ import React, { useEffect, useState } from 'react';
 import UsersList from '../Components/UsersList';
 import GroupsList from '../Components/GroupsList';
 import { getSocket } from '../socket.js';
+import { useSocket } from '../SocketContext.jsx';
+import axios from 'axios';
+
 export default function Home() {
     const [users, setUsers] = useState([])
-    const [socket, setSocket] = useState(null)
+    const {socket, setSocket} = useSocket()
+
     useEffect(() => {
-        const retrieveSocket = () => {
-            const socketInstance = getSocket()
-            console.log("socketInstance", socketInstance)
-            setSocket(socketInstance)
-            socketInstance.on("user:joined",getUsers)
-            socketInstance.on("user:leaved",getUsers)
+        const getOnlineUsers = async () => {
+            const response = await axios.get('http://localhost:39189/user/online')
+            setUsers(response.data.users)
         }
-        const getUsers = async () => {
-            const response = await fetch('http://localhost:39189/api/users')
-            const data = await response.json()
-            console.log("kuy",data.users);
-            setUsers([...users, ...data.users])
+        if(socket) {
+            socket.on('user:joined',getOnlineUsers)
+            socket.on('user:leaved',getOnlineUsers)
         }
-        retrieveSocket()
-        getUsers()
-    }, [])
+        getOnlineUsers()
+        
+        return (
+            () => {
+                socket.off('user:joined',getOnlineUsers)
+                socket.off('user:leaved',getOnlineUsers)
+            }
+        )
+    },[])
+
   return (
     <div className="flex flex-row grow w-screen justify-center h-screen">
-        <UsersList users={users.map((user)=>({id:user.userId,name:user.username,avatarIndex:user.avatarIndex}))} 
+        <UsersList users={users.map((user)=>({id:user.uid,name:user.displayName,avatarIndex:user.avatarIndex}))} 
             header={"Active Users"}/>
         <GroupsList groups={[{ id: 1, name: 'Group 1' }, { id: 2, name: 'Group 2' }]} />
         <div className="flex flex-col items-center justify-between">

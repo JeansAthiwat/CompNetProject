@@ -1,12 +1,15 @@
 import React, { useRef } from "react"
 import { useNavigate } from "react-router-dom"
 import axios from 'axios'
+import io from 'socket.io-client';
+import { useSocket } from "../SocketContext"
 
 const LoginPage = () => {
     const usernameRef = useRef()
     const passwordRef = useRef()
 
     const navigate = useNavigate()
+    const {socket, setSocket} = useSocket()
 
     const handleLogin = async (e) => {
         e.preventDefault();
@@ -23,6 +26,13 @@ const LoginPage = () => {
             localStorage.setItem("token", data.token);
             localStorage.setItem("displayName",data.user.displayName)
             localStorage.setItem("avatarIndex",data.user.avatarIndex)
+            const s = io("http://localhost:39189", {
+                auth: { token:data.token, displayName:data.user.displayName, avatarIndex:data.user.avatarIndex },
+              });
+              s.on("connect", () => {
+                console.log("Socket connected with ID:", s.id, data.user.displayName);
+              });
+            setSocket(s)
             navigate('/home');
             
         } catch (err) {

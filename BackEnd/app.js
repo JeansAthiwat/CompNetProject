@@ -7,9 +7,11 @@ import session from "express-session";
 import cookieParser from "cookie-parser";
 import dotenv from "dotenv";
 import { setUpSocket } from "./socket.js";
-import router from "./router.js";
+// import router from "./router.js";
 import authRouter from "./router/auth.js"
 import userRouter from "./router/user.js"
+import conversationRouter from "./router/conversation.js"
+import messageRouter from "./router/message.js"
 
 dotenv.config();
 
@@ -35,6 +37,8 @@ app.use(
 // app.use('/api',router)
 app.use('/auth',authRouter)
 app.use('/user',userRouter)
+app.use('/conversation',conversationRouter)
+app.use('/message', messageRouter)
 
 const server = http.createServer(app);
 
