@@ -2,7 +2,7 @@ import React from "react";
 
 export default function GroupsList({ groups}) {
     return (
-        <div className="h-screen w-[60vw] flex flex-col border-x-2 border-primary-stroke">
+        <div className="h-screen w-full min-w-80 lg:w-[60vw] flex flex-col border-x-2 border-primary-stroke">
           <h1 className="text-5xl font-bold py-4 px-2 border-b-2 border-primary-stroke text-center ">
             Groups
           </h1>
@@ -20,7 +20,7 @@ export default function GroupsList({ groups}) {
                   alt="user-profile"
                   className="w-20 h-20 rounded-full"
                 />
-                <h3 className="text-3xl font-bold">{group.name}</h3>
+                <h3 className="text-3xl font-bold truncate">{group.name}</h3>
               </div>
             ))}
           </div>

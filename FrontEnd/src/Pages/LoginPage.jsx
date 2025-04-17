@@ -1,15 +1,16 @@
 import React, { useRef } from "react"
 import { useNavigate } from "react-router-dom"
 import axios from 'axios'
-import io from 'socket.io-client';
-import { useSocket } from "../SocketContext"
+import { Link } from "react-router-dom";
+import { useAuth } from "../Contexts/AuthContext";
 
 const LoginPage = () => {
     const usernameRef = useRef()
     const passwordRef = useRef()
-
+    const {user, login, logout} = useAuth()
     const navigate = useNavigate()
-    const {socket, setSocket} = useSocket()
+    
+
 
     const handleLogin = async (e) => {
         e.preventDefault();
@@ -23,17 +24,12 @@ const LoginPage = () => {
           
             // No need for response.ok, Axios throws for non-2xx responses
             console.log("Login Successfully", data);
-            localStorage.setItem("token", data.token);
-            localStorage.setItem("displayName",data.user.displayName)
-            localStorage.setItem("avatarIndex",data.user.avatarIndex)
-            const s = io("http://localhost:39189", {
-                auth: { token:data.token, displayName:data.user.displayName, avatarIndex:data.user.avatarIndex },
-              });
-              s.on("connect", () => {
-                console.log("Socket connected with ID:", s.id, data.user.displayName);
-              });
-            setSocket(s)
+            
+            login({ token:data.token, user: data.user });
+
+
             navigate('/home');
+
             
         } catch (err) {
             // Handle different error types
@@ -55,7 +51,10 @@ const LoginPage = () => {
     }
     return (
         <>
-            <form id="register-form" className="h-fit w-fit bg-white rounded-2xl shadow-2xl flex-col justify-between">
+        <div className="flex w-screen h-screen items-center justify-center">
+
+        
+            <form id="login-form" className="h-fit w-fit bg-white rounded-2xl shadow-2xl flex p-4 flex-col justify-between items-center ">
                 <div>
                     <p className='input-label'>Username</p>
                     <input type='text' placeholder="NoobMaster69" ref={usernameRef} className='border-2 border-primary-stroke'></input>
@@ -64,8 +63,10 @@ const LoginPage = () => {
                     <p className='input-label'>Password</p>
                     <input type='password' placeholder="" ref={passwordRef} className='border-2 border-primary-stroke'></input>
                 </div>
-                <button className='w-fit h-fit px-2 py-2 rounded-full bg-primary-stroke text-white' onClick={handleLogin}>Register</button>
+                <Link className='text-blue-600 ' to='/register'>create an account?</Link>
+                <button className='w-fit h-fit px-2 py-2 rounded-full bg-primary-stroke text-white' onClick={handleLogin}>login</button>
             </form>
+        </div>
         </>
     )
 }

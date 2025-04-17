@@ -9,6 +9,9 @@ export const getPrivateConversation = async (req, res) => {
         const {participants} = req.body
         let conv = await Conversation.findOne({
             participants: { $all: participants, $size: participants.length },
+          })  .populate({
+            path: 'participants',
+            select: 'displayName avatarIndex',
           })
         if(conv) {
             res.status(200).json({success:true, conv})

@@ -4,7 +4,7 @@ import { editProfile, getOnlineUsers, getUser } from '../controller/user.js'
 
 const router = express.Router()
 
-router.route('/').get(authMiddleware, getUser).put(authMiddleware, editProfile)
+router.route('/').get(authMiddleware, getUser).patch(authMiddleware, editProfile)
 
 router.route('/online').get(getOnlineUsers)
 

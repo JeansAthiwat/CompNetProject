@@ -1,27 +1,34 @@
 import React, { useState, useEffect, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 import axios from 'axios'
+import { useAuth } from "../Contexts/AuthContext";
 
 function Profile() {
   const displayNameRef = useRef()
-  const [avatarIndex, setAvatarIndex] = useState(() => Number(localStorage.getItem('avatarIndex')) || 0);
-
+  const {token, user, setUser} = useAuth();
+  const [avatarIndex, setAvatarIndex] = useState(() => user?.avatarIndex|| 0);
   const navigate = useNavigate();
 
+  console.log(user)
   const handleSubmit = async (e) => {
     e.preventDefault();
     if (displayNameRef.current.value.trim()) {
-      const response = axios.put('http://localhost:39189/user', {
+      const response = axios.patch('http://localhost:39189/user', {
         displayName:displayNameRef.current.value,
         avatarIndex
       }, {
         headers: {
-          authorization: `Bearer ${localStorage.getItem('token')}`
+          authorization: `Bearer ${token}`
         }
       })
       console.log(response.data)
-      localStorage.setItem('displayName', displayNameRef.current.value)
-      localStorage.setItem('avatarIndex', avatarIndex)
+      console.log(user)
+      setUser(prev => ({
+        ...prev,
+        displayName: displayNameRef.current.value,
+        avatarIndex,
+      }));
+      localStorage.setItem("user", JSON.stringify(user));
       
       navigate("/home")
     }
@@ -36,7 +43,7 @@ function Profile() {
         <input
           type="text"
           ref={displayNameRef}
-          defaultValue={localStorage.getItem("displayName") || ""}
+          defaultValue={user.displayName || ""}
           className="px-6 py-2 text-lg border-2 border-[#7d5a50] rounded-md mb-4 w-144 text-center bg-white"
         />
         <div className="flex gap-4 mb-4">

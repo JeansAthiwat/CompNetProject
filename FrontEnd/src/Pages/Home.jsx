@@ -1,41 +1,66 @@
 import React, { useEffect, useState } from 'react';
 import UsersList from '../Components/UsersList';
 import GroupsList from '../Components/GroupsList';
-import { getSocket } from '../socket.js';
-import { useSocket } from '../SocketContext.jsx';
+import { useSocket } from '../Contexts/SocketContext.jsx';
 import axios from 'axios';
+import { useAuth } from '../Contexts/AuthContext.jsx';
+import { useNavigate } from 'react-router-dom';
+
 
 export default function Home() {
     const [users, setUsers] = useState([])
-    const {socket, setSocket} = useSocket()
-
+    const {socket} = useSocket()
+    const {user, logout} = useAuth()
+    const navigate = useNavigate()
+    
     useEffect(() => {
+        if (!socket) return;
+    
         const getOnlineUsers = async () => {
-            const response = await axios.get('http://localhost:39189/user/online')
-            setUsers(response.data.users)
-        }
-        if(socket) {
-            socket.on('user:joined',getOnlineUsers)
-            socket.on('user:leaved',getOnlineUsers)
-        }
-        getOnlineUsers()
-        
-        return (
-            () => {
-                socket.off('user:joined',getOnlineUsers)
-                socket.off('user:leaved',getOnlineUsers)
+            try {
+                const response = await axios.get('http://localhost:39189/user/online');
+                setUsers(response.data.users);
+                console.dir(response.data)
+                console.dir(user)
+            } catch (error) {
+                console.error("Error fetching online users:", error);
             }
-        )
-    },[])
+        };
+    
+        socket.on('user:joined', getOnlineUsers);
+        socket.on('user:leaved', getOnlineUsers);
+        getOnlineUsers();
+    
+        return () => {
+            socket.off('user:joined', getOnlineUsers);
+            socket.off('user:leaved', getOnlineUsers);
+        };
+    }, [socket]);
+    
+    const onLogOut = () => {
+        logout()
+        navigate('/')
+    }
 
-  return (
-    <div className="flex flex-row grow w-screen justify-center h-screen">
-        <UsersList users={users.map((user)=>({id:user.uid,name:user.displayName,avatarIndex:user.avatarIndex}))} 
+  return users.length>0 &&(
+        
+        <div className="flex flex-row grow w-screen justify-center h-screen">
+        <div className='hidden lg:block'>
+        <UsersList users={users}
             header={"Active Users"}/>
+        </div>
+        
         <GroupsList groups={[{ id: 1, name: 'Group 1' }, { id: 2, name: 'Group 2' }]} />
         <div className="flex flex-col items-center justify-between">
             <UsersList header={"Members"}
-            users={[{ id: 1, name: 'John Doe' }, { id: 2, name: 'Jane Smith' }]} />
+            users={[]} />
+            <button onClick={onLogOut}
+                // onClick={onClick}
+                className="fixed bottom-6 right-30 w-20 h-20 flex items-center justify-center rounded-full bg-red-600 text-white shadow-lg hover:bg-[#5e413b] transition"
+                aria-label="Add"
+                >
+                Log out
+            </button>
             <button
                 // onClick={onClick}
                 className="fixed bottom-6 right-6 w-20 h-20 flex items-center justify-center rounded-full bg-primary-stroke text-white shadow-lg hover:bg-[#5e413b] transition"
@@ -54,6 +79,5 @@ export default function Home() {
             </button>
         </div>
 
-    </div>
-  );
+    </div>);
 }

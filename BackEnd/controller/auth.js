@@ -10,7 +10,7 @@ export const register = async (req,res) => {
             res.status(400).json({success:false, message:"Username and Password are required"})
             return
         }
-        const newUser = new User({username, password, displayName:username , avatarIndex:0})
+        const newUser = new User({username, password, displayName:username })
         await newUser.save()
         const payload = {uid:newUser._id}
         const token = jwt.sign(payload, process.env.JWT_SECRET, { expiresIn: '7d' })
