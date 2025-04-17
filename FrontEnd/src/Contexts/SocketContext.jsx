@@ -11,7 +11,7 @@ const SocketProvider = ({ children }) => {
   const [socket, setSocket] = useState(null);
 
   useEffect(() => {
-    if (!token || socket) return;
+    if (!token ) return;
 
     const newSocket = io("http://localhost:39189", {
       auth: {
@@ -31,7 +31,7 @@ const SocketProvider = ({ children }) => {
       newSocket.disconnect();
       setSocket(null);
     };
-  }, [token]);
+  }, [token, user?.displayName, user?.avatarIndex]);
 
   return (
     <SocketContext.Provider value={{ socket }}>

@@ -28,7 +28,7 @@ const LoginPage = () => {
             login({ token:data.token, user: data.user });
 
 
-            navigate('/home');
+            navigate('/profile');
 
             
         } catch (err) {
