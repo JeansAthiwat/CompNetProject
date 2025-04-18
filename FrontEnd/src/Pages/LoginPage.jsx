@@ -1,12 +1,14 @@
-import React, { useRef } from "react"
+import React, { useRef, useState } from "react"
 import { useNavigate } from "react-router-dom"
 import axios from 'axios'
-import { Link } from "react-router-dom";
-import { useAuth } from "../Contexts/AuthContext";
+import { Link } from "react-router-dom"
+import { useAuth } from "../Contexts/AuthContext"
+import { Heart, User, Lock, Eye, EyeOff } from "lucide-react"
 
 const LoginPage = () => {
     const usernameRef = useRef()
     const passwordRef = useRef()
+    const [showPassword, setShowPassword] = useState(false)
     const {user, login, logout} = useAuth()
     const navigate = useNavigate()
     
@@ -50,24 +52,66 @@ const LoginPage = () => {
           
     }
     return (
-        <>
-        <div className="flex w-screen h-screen items-center justify-center">
+        <div className="min-h-screen flex items-center justify-center bg-background px-4">
+            <div className="paper-effect w-full max-w-md p-8 space-y-8 bg-white rounded-2xl shadow-2xl">
+                <div className="text-center space-y-2">
+                    <Heart className="mx-auto text-primary w-12 h-12" />
+                    <h1 className="text-4xl font-handwritten font-bold text-primary">Blind Date</h1>
+                    <p className="text-muted-foreground font-handwritten text-xl">Find your match...</p>
+                </div>
 
-        
-            <form id="login-form" className="h-fit w-fit bg-white rounded-2xl shadow-2xl flex p-4 flex-col justify-between items-center ">
-                <div>
-                    <p className='input-label'>Username</p>
-                    <input type='text' placeholder="NoobMaster69" ref={usernameRef} className='border-2 border-primary-stroke'></input>
+                <form onSubmit={handleLogin} className="space-y-6">
+                    <div className="space-y-2">
+                        <label className="font-handwritten text-lg">Username</label>
+                        <div className="relative">
+                            <User className="absolute left-3 top-3 h-4 w-4 text-muted-foreground" />
+                            <input
+                                type="text"
+                                ref={usernameRef}
+                                placeholder="Enter username"
+                                className="w-full pl-9 border-2 border-primary-stroke rounded-md p-2 font-handwritten"
+                            />
+                        </div>
+                    </div>
+
+                    <div className="space-y-2">
+                        <label className="font-handwritten text-lg">Password</label>
+                        <div className="relative">
+                            <Lock className="absolute left-3 top-3 h-4 w-4 text-muted-foreground" />
+                            <input
+                                type={showPassword ? "text" : "password"}
+                                ref={passwordRef}
+                                placeholder="••••••••"
+                                className="w-full pl-9 pr-9 border-2 border-primary-stroke rounded-md p-2"
+                            />
+                            <button
+                                type="button"
+                                onClick={() => setShowPassword(!showPassword)}
+                                className="absolute right-3 top-3 text-muted-foreground hover:text-primary transition-colors"
+                            >
+                                {showPassword ? <EyeOff size={16} /> : <Eye size={16} />}
+                            </button>
+                        </div>
+                    </div>
+
+                    <button 
+                        type="submit" 
+                        className="w-full font-handwritten text-lg bg-primary-stroke text-white py-2 rounded-full"
+                    >
+                        Start Chatting
+                    </button>
+                </form>
+
+                <div className="text-center">
+                    <Link 
+                        to="/register"
+                        className="text-sm text-muted-foreground hover:text-primary transition-colors font-handwritten"
+                    >
+                        Need an account? Register
+                    </Link>
                 </div>
-                <div>
-                    <p className='input-label'>Password</p>
-                    <input type='password' placeholder="" ref={passwordRef} className='border-2 border-primary-stroke'></input>
-                </div>
-                <Link className='text-blue-600 ' to='/register'>create an account?</Link>
-                <button className='w-fit h-fit px-2 py-2 rounded-full bg-primary-stroke text-white' onClick={handleLogin}>login</button>
-            </form>
+            </div>
         </div>
-        </>
     )
 }
 
