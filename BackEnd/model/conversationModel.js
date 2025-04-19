@@ -7,6 +7,19 @@ const conversationSchema = new Schema(
         type: Boolean,
         required: [true, "Please specify the privacy of this conversation"]
     },
+    name: {
+      type: String,
+      validate: {
+        validator: function (value) {
+          // 'this' refers to the document
+          if (!this.is_private && (!value || value.trim() === "")) {
+            return false;
+          }
+          return true;
+        },
+        message: "Name is required for group conversations"
+      }
+    },
     participants: [
       { type: Schema.Types.ObjectId, ref: "User" }, // Tutor & Student
     ],

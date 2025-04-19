@@ -36,7 +36,3 @@ body {
   color: #846358;
   
 }
-
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
