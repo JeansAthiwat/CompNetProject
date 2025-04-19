@@ -29,7 +29,7 @@ export default function UsersList({ users, header, active=true}) {
           <div
             key={index}
             className="flex flex-row w-full p-2 gap-4 items-center border-2 border-primary-stroke bg-secondary-bg rounded-2xl"
-            onClick={() => handleClick(user.uid, user.displayName)}
+            onClick={() => {handleClick(user.uid||user._id, user.displayName)}}
           >
             <img
               src={`/avatars/avatar${user.avatarIndex}.jpg`}

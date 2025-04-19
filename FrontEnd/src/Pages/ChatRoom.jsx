@@ -15,7 +15,6 @@ const ChatRoom = () => {
     const [convo, setConvo] = useState()
     const [messages, setMessages] = useState([])
     const inputRef = useRef()
-    const chatBottomRef = useRef()
     const chatContainerRef = useRef()
     const { uid }= jwtDecode(token)
 
@@ -23,19 +22,36 @@ const ChatRoom = () => {
     const runInitRef = useRef(false)
 
     const getConvo = async (participants) => {
-        try {
-            const response = await axios.post('http://localhost:39189/conversation/private', {
-                participants: participants
-            }, {
-                headers: {
-                    'Content-Type':'application/json',
-                    authorization: `Bearer ${localStorage.getItem('token')}`
-                }
-            })
-            console.log(response.data)
-            setConvo(response.data.conv)
-        } catch(err) {
-            console.log(err)
+        if(isPrivate) {
+            // Get private chat convo
+            try {
+                const response = await axios.post('http://localhost:39189/conversation/private', {
+                    participants: participants
+                }, {
+                    headers: {
+                        'Content-Type':'application/json',
+                        authorization: `Bearer ${localStorage.getItem('token')}`
+                    }
+                })
+                // console.log(response.data.conv)
+                setConvo(response.data.conv)
+            } catch(err) {
+                console.log(err)
+            }
+        } else {
+            // Get group chat convo
+            try{
+                const response = await axios.get(`http://localhost:39189/conversation/group/${to}`, {
+                    headers: {
+                        'Content-Type':'application/json',
+                        authorization: `Bearer ${localStorage.getItem('token')}`
+                    }
+                })
+                setConvo(response.data.conv)
+                // console.log(response.data.conv)
+            } catch(err) {
+                console.log(err)
+            }
         }
     }
 
@@ -43,23 +59,48 @@ const ChatRoom = () => {
         if (!socket) return; // 🚫 Don't run if socket hasn't been initialized
       
         const handlePrivateMessage = ({ sender, text }) => {
-          setMessages((prev) => [...prev, { sender, text }]);
+            // console.log('send by', sender)
+            setMessages((prev) => [...prev, { sender, text }]);
         };
+
+        const updateGroupMemberLeave = ({roomId, target}) => {
+            if(roomId===to) {
+                setConvo((prev) => {return {...prev, participants:prev.participants.filter((p)=>p._id!==target._id)}})
+            }
+        }
+        
+        const updateGroupMemberJoin = ({roomId, target}) => {
+            console.log("check convo", target)
+            if(roomId===to) {
+                setConvo((prev) => {return {...prev, participants:[...prev.participants, {_id:target._id, displayName:target.displayName, avatarIndex:target.avatarIndex}]}})
+            }
+        }
+
+        if(isPrivate) {
+            socket.on("private message", handlePrivateMessage);       
+            return () => {
+              socket.off("private message", handlePrivateMessage);
+            };
+        } else {
+            socket.emit("enter room", {roomId:to, user})
+            socket.on("group message", handlePrivateMessage);
+            socket.on("join group",updateGroupMemberJoin)
+            socket.on("leave group",updateGroupMemberLeave)
+            return () => {
+                socket.emit("exit room", {roomId: to, user})
+                socket.off("group message", handlePrivateMessage);
+                socket.off("join group",updateGroupMemberJoin)
+                socket.off("leave group",updateGroupMemberLeave)
+              };
+        }
       
-        socket.on("private message", handlePrivateMessage);
-      
-        return () => {
-          socket.off("private message", handlePrivateMessage);
-        };
       }, [socket]);
       
     
     useEffect(() => {
         if(!runInitRef.current) {
-            runInitRef.current = true
-            if(isPrivate) {                
-                getConvo([uid, to])
-            }
+            runInitRef.current = true             
+            getConvo([uid, to])
         }
     }, [])
 
@@ -92,15 +133,22 @@ const ChatRoom = () => {
     const sendMsg = () => {
         const text = inputRef.current.value
         if (text.trim() === "") return;
-        socket.emit("private message", {
-            cid:convo._id,
-            sender:uid,
-            reciever:to,
-            text
-        })
+        if(isPrivate) {
+            socket.emit("private message", {
+                cid:convo._id,
+                sender:uid,
+                reciever:to,
+                text
+            })
+        } else {
+            socket.emit("group message", {
+                cid:convo._id,
+                sender:uid,
+                text
+            })
+        }
         setMessages((prev) => [...prev, {"sender":{"displayName":user.displayName, '_id':user._id}, text}])
         inputRef.current.value = ""
-        // chatBottomRef.current.scrollIntoView()
     }
 
     return (
@@ -146,7 +194,6 @@ const ChatRoom = () => {
                             </div>
                         )
                     }
-                    <div ref={chatBottomRef} className="chat-bottom h-0"></div>
                 </div>
 
                 <div className="chat-footer flex justify-between w-[80vw] mb-4 pl-15 mt-5">
@@ -158,14 +205,13 @@ const ChatRoom = () => {
                         }}ref={inputRef} type="text" className="chat-input bg-secondary-bg py-2 px-4 rounded-2xl grow mx-2 text-xl font-bold" />
                     <button className="footer-button bg-primary-stroke text-white text-xl font-bold py-2 px-4 rounded-full"
                         onClick={sendMsg}
->
-                    
+                    >
                         Send
                     </button>
                 </div>
                 </div>
 
-                <UsersList users={convo.participants} active={!isPrivate} header={"All Users"}/>
+                <UsersList users={convo.participants} active={!isPrivate} header={"Members"}/>
 
             </div>
             </>

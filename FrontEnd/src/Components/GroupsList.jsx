@@ -1,6 +1,20 @@
-import React from "react";
+import React, { useState } from "react";
+import { useNavigate } from "react-router-dom";
+import { useAuth } from "../Contexts/AuthContext";
 
-export default function GroupsList({ groups}) {
+export default function GroupsList({ groups, onGroupFocus }) {
+    const navigate = useNavigate()
+    const {user} = useAuth()
+    const [focusedId, setFocusedId] = useState(null)
+
+    const handleClick = (group) => {
+      //send data to parent
+      onGroupFocus(group)
+
+      //render focus effect
+      setFocusedId(group.id)
+    }
+
     return (
         <div className="h-screen w-full min-w-80 lg:w-[60vw] flex flex-col border-x-2 border-primary-stroke">
           <h1 className="text-5xl font-bold py-4 px-2 border-b-2 border-primary-stroke text-center ">
@@ -13,7 +27,8 @@ export default function GroupsList({ groups}) {
             {groups.map((group) => (
               <div
                 key={group.id}
-                className="flex flex-row h-40 w-full p-10 gap-4 items-center border-2 border-primary-stroke bg-secondary-bg rounded-full"
+                className={`flex flex-row h-40 w-full p-10 gap-4 items-center border-primary-stroke bg-secondary-bg rounded-full ${group.id===focusedId?"border-5":"border-2"}`}
+                onClick={() => {handleClick(group)}}
               >
                 <img
                   src="https://encrypted-tbn2.gstatic.com/images?q=tbn:ANd9GcSMDqhEJR6Udf0kawcsUab8zTjta2rfznDcUyzGuPe1-Gh81zPBjX9_fQjEl585aZQqRuE1Lif0d0rUjwj3pkviGygMizp3mKTc-spwIQ"

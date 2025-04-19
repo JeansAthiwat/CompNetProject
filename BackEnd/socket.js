@@ -43,6 +43,28 @@ export const setUpSocket = (server) => {
         sid: socket.id,
         uid
       });
+
+      socket.on("new group", () => {
+        socket.broadcast.emit("new group", null)
+      })
+
+      socket.on("join group", ({roomId, target}) => {
+        socket.broadcast.emit("join group", ({roomId, target}))
+      })
+
+      socket.on("leave group", ({roomId, target}) => {
+        socket.broadcast.emit("leave group", ({roomId, target}))
+      })
+
+      socket.on("enter room", ({roomId}) => {
+        socket.join(roomId)
+        console.log(`${displayName} joined ${roomId}`)
+      })
+
+      socket.on("exit room", ({roomId}) => {
+        socket.leave(roomId)
+        console.log(`${displayName} leaved ${roomId}`)
+      })
         
       socket.on("private message", async ({cid, sender, reciever, text}) => {
         // console.log(cid, sender, reciever, text)
@@ -52,15 +74,16 @@ export const setUpSocket = (server) => {
         io.to(onlineUsers.get(reciever).socketId).emit('private message', {
           sender:{displayName, avatarIndex}, text
         })
-        // const senderData = userToSocket.get(sender)
-        // const recieverData = userToSocket.get(reciever)
-        // console.log(recieverData)
-        // io.to(recieverData.socketId).emit("private message", {
-        //   sender: {id:sender ,name:senderData.username, avatarIndex:senderData.avatarIndex},
-        //   text,
-        //   });
       });
   
+      socket.on("group message", async ({cid, sender, text}) => {
+        const newMssg = new Message({conversationId:cid, sender, text})
+        await newMssg.save()
+        socket.to(cid).emit('group message', {
+          sender:{displayName, avatarIndex}, text
+        })
+      })
+
       socket.on("disconnect", () => {
         onlineUsers.delete(uid);
         socket.broadcast.emit("user:leaved");
