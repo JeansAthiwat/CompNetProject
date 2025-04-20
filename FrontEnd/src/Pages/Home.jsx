@@ -6,6 +6,7 @@ import { useSocket } from '../Contexts/SocketContext.jsx';
 import axios from 'axios';
 import { useAuth } from '../Contexts/AuthContext.jsx';
 import { useNavigate } from 'react-router-dom';
+import LoadingScreen from '../Components/ui/LoadingScreen.jsx';
 
 
 export default function Home() {
@@ -15,24 +16,36 @@ export default function Home() {
     const {user, logout, token} = useAuth()
     const [createGroup, setCreateGroup] = useState(false)
     const [focusedGroup, setFocusedGroup] = useState({participants:[]})
+    const [loading, setLoading] = useState(true)
     const navigate = useNavigate()
     
     const getChatGroups = async () => {
-        const response = await axios.get('http://localhost:39189/conversation/group')
-        setChatGroups(response.data.groups)
+        try {
+            setLoading(true)
+            const response = await axios.get('http://localhost:39189/conversation/group')
+            setChatGroups(response.data.groups)
+        } catch (error) {
+            console.log(error)
+        } finally {
+            setLoading(false)
+        }
+
     }
 
     useEffect(() => {
-        if (!socket) return;
+        if (!socket?.connected) return;
     
         const getOnlineUsers = async () => {
             try {
+                setLoading(true)
                 const response = await axios.get('http://localhost:39189/user/online');
                 setUsers(response.data.users);
                 console.dir(response.data)
-                console.dir(user)
+                // console.dir(user)
             } catch (error) {
                 console.error("Error fetching online users:", error);
+            } finally{
+                setLoading(false)
             }
         };
 
@@ -63,7 +76,7 @@ export default function Home() {
             socket.off('join group', updateFocusedGroupJoin)
             socket.off('leave group', updateFocusedGroupLeave)
         };
-    }, [socket]);
+    }, [socket?.connected]);
 
     useEffect(() => {
         getChatGroups()
@@ -112,7 +125,7 @@ export default function Home() {
         navigate('/')
     }
 
-  return users.length>0 &&(
+  return loading ? <LoadingScreen /> : (
         
         <div className="flex flex-row grow w-screen justify-center h-screen">
         <div className='hidden lg:block'>

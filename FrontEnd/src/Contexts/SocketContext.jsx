@@ -12,7 +12,7 @@ const SocketProvider = ({ children }) => {
 
   useEffect(() => {
     if (!token ) return;
-
+    console.log(socket);
     const newSocket = io("http://localhost:39189", {
       auth: {
         token,
@@ -23,6 +23,7 @@ const SocketProvider = ({ children }) => {
 
     newSocket.on("connect", () => {
       console.log("✅ Connected:", newSocket.id);
+      // console.log(user)
     });
 
     setSocket(newSocket);

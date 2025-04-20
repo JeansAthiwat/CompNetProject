@@ -3,6 +3,7 @@ import { useNavigate } from "react-router-dom"
 import axios from 'axios'
 import { Link } from "react-router-dom"
 import { Heart, User, Lock, Eye, EyeOff } from "lucide-react"
+import { useAuth } from "../Contexts/AuthContext"
 
 const Register = () => {
     const usernameRef = useRef()
@@ -11,6 +12,7 @@ const Register = () => {
     const [showPassword, setShowPassword] = useState(false)
     const [showConfirmPassword, setShowConfirmPassword] = useState(false)
     const navigate = useNavigate()
+    const {login} = useAuth()
 
     const handleRegisterSubmit = async (e) => {
         e.preventDefault();

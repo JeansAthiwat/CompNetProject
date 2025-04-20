@@ -11,6 +11,7 @@ const AuthProvider = ({ children }) => {
   });
 
   useEffect(() => {
+    localStorage.setItem("user", JSON.stringify(user));
     console.log("AuthContext user changed:", user);
   }, [user]);
   

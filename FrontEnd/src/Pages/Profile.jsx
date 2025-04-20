@@ -11,27 +11,34 @@ function Profile() {
 
   console.log(user)
   const handleSubmit = async (e) => {
-    e.preventDefault();
-    if (displayNameRef.current.value.trim()) {
-      const response = axios.patch('http://localhost:39189/user', {
-        displayName:displayNameRef.current.value,
-        avatarIndex
-      }, {
-        headers: {
-          authorization: `Bearer ${token}`
-        }
-      })
-      console.log(response.data)
-      console.log(user)
-      setUser(prev => ({
-        ...prev,
-        displayName: displayNameRef.current.value,
-        avatarIndex,
-      }));
-      localStorage.setItem("user", JSON.stringify(user));
-      
+    try {
+      e.preventDefault();
+      if (displayNameRef.current.value.trim()) {
+        const response = axios.patch('http://localhost:39189/user', {
+          displayName:displayNameRef.current.value,
+          avatarIndex
+        }, {
+          headers: {
+            authorization: `Bearer ${token}`
+          }
+        })
+        console.log(response.data)
+        console.log(user)
+        setUser(prev => ({
+          ...prev,
+          displayName: displayNameRef.current.value,
+          avatarIndex,
+        }));
+        // console.log(user)
+
+      }
+    } catch (error) {
+      console.log(error)
+    } finally {
+      // localStorage.setItem("user", JSON.stringify(user));   
       navigate("/home")
     }
+
   };
 
   const avatarOptions = Array.from({ length: 5 }, (_, i) => i);
