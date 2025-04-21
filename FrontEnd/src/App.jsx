@@ -11,10 +11,10 @@ import SocketProvider from "./Contexts/SocketContext.jsx";
 import AuthProvider from "./Contexts/AuthContext.jsx";
 
 function App() {
+  
   return (
     <>
-    
-      <Router>
+      <Router >
           <Routes>
             <Route path="/" element={<LoginPage />} />
             <Route path="/register" element={<Registrar />} />

@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState , useRef } from 'react';
 import UsersList from '../Components/UsersList';
 import GroupsList from '../Components/GroupsList';
 import GroupCreationForm from '../Components/GroupCreationForm'
@@ -13,12 +13,35 @@ export default function Home() {
     const [users, setUsers] = useState([])
     const [chatGroups, setChatGroups] = useState([])
     const {socket} = useSocket()
-    const {user, logout, token} = useAuth()
+    const {user, token} = useAuth()
     const [createGroup, setCreateGroup] = useState(false)
     const [focusedGroup, setFocusedGroup] = useState({participants:[]})
     const [loading, setLoading] = useState(true)
     const navigate = useNavigate()
-    
+    const groupNameRef = useRef()
+
+
+    const handleSubmit = async (e) => {
+        e.preventDefault()
+        // console.log(groupNameRef.current.value)
+        try {
+            const response = await axios.post("http://localhost:39189/conversation/group", {
+                groupName:groupNameRef.current.value
+            }, {
+                headers: {
+                    authorization: `Bearer ${localStorage.getItem('token')}`,
+                    "Content-Type": "application/json"
+                }
+            })
+            // console.log(response.data)
+            const conv = response.data.conv
+            socket.emit('new group', null)
+            navigate("/chat", { state: { isPrivate:conv.is_private, to:conv._id, roomName:conv.name } })
+        } catch(err) {
+            console.log(err)
+        }
+    }
+
     const getChatGroups = async () => {
         try {
             setLoading(true)
@@ -120,14 +143,12 @@ export default function Home() {
         }
     }
 
-    const onLogOut = () => {
-        logout()
-        navigate('/')
-    }
+
 
   return loading ? <LoadingScreen /> : (
         
-        <div className="flex flex-row grow w-screen justify-center h-screen">
+        <div className="flex flex-row grow w-screen justify-center h-screen"
+        style={{ background: 'var(--color-primary-bg)' }}>
         <div className='hidden lg:block'>
         <UsersList users={users}
             header={"Active Users"}/>
@@ -135,81 +156,93 @@ export default function Home() {
         
         <GroupsList groups={chatGroups.map((group) => {return {id:group._id, name:group.name, participants:group.participants}})}
         onGroupFocus={onGroupFocus} />
-        {   !createGroup ?
+        {createGroup && (
+        <div className="fixed inset-0 z-50 bg-black/60 flex items-center justify-center">
+            <form
+            onSubmit={handleSubmit}
+            className="bg-secondary-bg p-6 rounded-xl w-full max-w-md flex flex-col gap-4 items-center shadow-xl"
+            >
+            <label className="text-2xl font-bold text-primary-stroke">Group name</label>
+            <input
+                defaultValue="Back Bender"
+                ref={groupNameRef}
+                className="bg-white text-black p-2 rounded w-full"
+            />
+            <div className="flex flex-row gap-2">
+                <button
+                type="submit"
+                className="bg-primary-stroke px-4 py-2 rounded-full text-secondary-bg hover:bg-primary-stroke/50 font-bold"
+                >
+                Create
+                </button>
+                <button
+                type="button"
+                onClick={() => setCreateGroup(false)}
+                className="bg-primary-stroke px-4 py-2 rounded-full text-secondary-bg hover:bg-primary-stroke/50  font-bold"
+                >
+                Cancel
+                </button>
+            </div>
+            </form>
+        </div>
+        )}
+
             <div className="flex flex-col items-center justify-between">
                 <UsersList header={"Members"}
                 users={focusedGroup.participants} />
                 {
                     focusedGroup.id &&
-                    <div className="absolute bottom-28 flex flex-col items-center">
+                    <div className="absolute bottom-28 flex flex-col gap-2 items-center">
                         {
                             focusedGroup.participants.some(p => p._id.toString() === user._id.toString()) ?
                             <>
                             <button onClick={onEnterChat}
-                                className="px-4 py-2 text-3xl rounded-full bg-primary-stroke text-white shadow-lg hover:bg-[#5e413b] transition mb-2"
+                                className="w-full min-w-40 px-4 py-2 text-3xl rounded-full bg-primary-stroke text-secondary-bg shadow-lg hover:bg-primary-stroke/50   transition "
                                 >
-                                Enter Chat   
+                                Enter   
                             </button>
                             <button onClick={onLeaveGroup}
-                                className="px-4 py-2 text-3xl rounded-full bg-primary-stroke text-white shadow-lg hover:bg-[#5e413b] transition"
+                                className="w-full min-w-40 px-4 py-2 text-3xl rounded-full bg-primary-stroke text-secondary-bg shadow-lg hover:bg-primary-stroke/50    transition"
                                 >
                                 Leave
                             </button>
                             </>
                             :
                             <button onClick={onJoinGroup}
-                                className="px-4 py-2 text-3xl rounded-full bg-primary-stroke text-white shadow-lg hover:bg-[#5e413b] transition"
+                                className="min-w-40 px-4 py-2 text-3xl rounded-full bg-primary-stroke text-secondary-bg shadow-lg hover:bg-primary-stroke/50  transition"
                                 >
                                 Join
                             </button>
                         }
                     </div>
                 }
-                <button onClick={onLogOut}
-                    className="fixed bottom-6 right-30 w-20 h-20 flex items-center justify-center rounded-full bg-red-600 text-white shadow-lg hover:bg-[#5e413b] transition"
-                    >
-                    Log out
-                </button>
-                <button
-                    onClick={()=>{setCreateGroup(true)}}
-                    className="fixed bottom-6 right-6 w-20 h-20 flex items-center justify-center rounded-full bg-primary-stroke text-white shadow-lg hover:bg-[#5e413b] transition"
-                    aria-label="Add"
-                    >
-                    <svg
-                        xmlns="http://www.w3.org/2000/svg"
-                        className="w-6 h-6"
-                        fill="none"
-                        viewBox="0 0 24 24"
-                        stroke="currentColor"
-                        strokeWidth={2}
-                    >
-                    <path strokeLinecap="round" strokeLinejoin="round" d="M12 4v16m8-8H4" />
-                    </svg>
-                </button>
-            </div>
-            :
-            <div className="flex flex-col items-center justify-between">
-                <div className="h-screen w-[20vw] min-w-50 flex flex-col">
-                    <GroupCreationForm />
+                <div className='className="absolute flex flex-row gap-4 p-3'>
+
+                    <button onClick={()=> navigate('/profile')}
+                        className=" text-4xl right-30 w-20 h-20 flex items-center justify-center rounded-full bg-red-600 text-white shadow-lg hover:bg-red-800   transition"
+                        >
+                        ←
+                    </button>
+                    <button
+                        onClick={()=>{setCreateGroup(true)}}
+                        className="right-6 w-20 h-20 flex items-center justify-center rounded-full bg-primary-stroke text-secondary-bg shadow-lg hover:bg-primary-stroke/50  transition"
+                        aria-label="Add"
+                        >
+                        <svg
+                            xmlns="http://www.w3.org/2000/svg"
+                            className="w-6 h-6"
+                            fill="none"
+                            viewBox="0 0 24 24"
+                            stroke="currentColor"
+                            strokeWidth={2}
+                        >
+                        <path strokeLinecap="round" strokeLinejoin="round" d="M12 4v16m8-8H4" />
+                        </svg>
+                    </button>
                 </div>
-                <button
-                    onClick={()=>{setCreateGroup(false)}}
-                    className="fixed bottom-6 right-6 w-20 h-20 flex items-center justify-center rounded-full bg-primary-stroke text-white shadow-lg hover:bg-[#5e413b] transition"
-                    aria-label="Add"
-                    >
-                    <svg
-                        xmlns="http://www.w3.org/2000/svg"
-                        className="w-6 h-6"
-                        fill="none"
-                        viewBox="0 0 24 24"
-                        stroke="currentColor"
-                        strokeWidth={2}
-                    >
-                    <path strokeLinecap="round" strokeLinejoin="round" d="M12 4v16m8-8H4" />
-                    </svg>
-                </button>
             </div>
-        }
+            
+
 
     </div>);
 }

@@ -18,7 +18,11 @@ const userSchema = new Schema({
     avatarIndex: {
         type: Number,
         default: 0
-    }
+    },
+    themeIndex: {
+        type: Number,
+        default: 0
+    },
 }, { timestamps: true });
 
 // 🔥 Prevent hashing if password is null (Google users)

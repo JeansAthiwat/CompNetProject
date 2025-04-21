@@ -17,7 +17,7 @@ export default function UsersList({ users, header, active=true}) {
   }
   // console.log("This is users:",users)
   return (
-    <div className="h-screen w-[20vw] min-w-50 flex flex-col ">
+    <div className="h-full w-[20vw] min-w-50 flex flex-col ">
       <h1 className="truncate text-5xl font-bold py-4 px-2 border-b-2 border-primary-stroke text-center ">
         {header}
       </h1>
@@ -28,7 +28,7 @@ export default function UsersList({ users, header, active=true}) {
         {users.map((user, index) => (
           <div
             key={index}
-            className="flex flex-row w-full p-2 gap-4 items-center border-2 border-primary-stroke bg-secondary-bg rounded-2xl"
+            className="flex flex-row w-full p-2 gap-4 items-center border-2 border-primary-stroke bg-secondary-bg hover:bg-secondary-bg/50  rounded-2xl"
             onClick={() => {handleClick(user.uid||user._id, user.displayName)}}
           >
             <img

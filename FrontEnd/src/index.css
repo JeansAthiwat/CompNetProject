@@ -19,10 +19,28 @@
   } */
 
 @theme {
+  --color-primary-bg: var(--color-primary-bg);
+  --color-primary-stroke: var(--color-primary-stroke);
+  --color-secondary-bg: var(--color-secondary-b);
+  --font-handlee: "Handlee", sans-serif;
+}
+
+.theme-default {
   --color-primary-bg: #fff9db;
   --color-primary-stroke: #846358;
   --color-secondary-bg: #ded2ad;
-  --font-handlee: "Handlee", sans-serif;
+}
+
+.theme-dark {
+  --color-primary-bg: #222222;
+  --color-primary-stroke: #aaaaaa;
+  --color-secondary-bg: #363636;
+}
+
+.theme-cyberpunk {
+  --color-primary-bg:  #000000;
+  --color-primary-stroke: #E8C999;
+  --color-secondary-bg: #8E1616;
 }
 
 body {
@@ -32,7 +50,6 @@ body {
     "Helvetica Neue", sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-  background-color: #fff9db;
-  color: #846358;
-  
+  background-color: var(--color-primary-bg);
+  color: var(--color-primary-stroke);
 }

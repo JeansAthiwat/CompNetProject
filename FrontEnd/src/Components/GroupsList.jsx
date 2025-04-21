@@ -27,7 +27,7 @@ export default function GroupsList({ groups, onGroupFocus }) {
             {groups.map((group) => (
               <div
                 key={group.id}
-                className={`flex flex-row h-40 w-full p-10 gap-4 items-center border-primary-stroke bg-secondary-bg rounded-full ${group.id===focusedId?"border-5":"border-2"}`}
+                className={`flex flex-row h-40 w-full p-10 gap-4 items-center border-primary-stroke border-2 hover:bg-secondary-bg/50 rounded-full ${group.id===focusedId?"bg-secondary-bg/60":"bg-secondary-bg"}`}
                 onClick={() => {handleClick(group)}}
               >
                 <img

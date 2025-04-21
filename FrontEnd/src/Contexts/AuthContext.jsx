@@ -5,6 +5,7 @@ export const useAuth = () => useContext(AuthContext);
 
 const AuthProvider = ({ children }) => {
   const [token, setToken] = useState(() => localStorage.getItem("token"));
+  const themes = ['theme-default', 'theme-dark', 'theme-cyberpunk'];
   const [user, setUser] = useState(() => {
     const savedUser = localStorage.getItem("user");
     return savedUser ? JSON.parse(savedUser) : null;
@@ -15,6 +16,10 @@ const AuthProvider = ({ children }) => {
     console.log("AuthContext user changed:", user);
   }, [user]);
   
+  useEffect(() => {
+    document.documentElement.className = themes[user?.themeIndex || 0];
+  }, [user?.themeIndex]);
+
   const login = ({ token, user }) => {
     localStorage.setItem("token", token);
     setToken(token);

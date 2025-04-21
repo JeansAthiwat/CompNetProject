@@ -71,7 +71,7 @@ export const setUpSocket = (server) => {
         
         const newMssg = new Message({conversationId:cid, sender, text})
         await newMssg.save()
-        io.to(onlineUsers.get(reciever).socketId).emit('private message', {
+        io.to(onlineUsers.get(reciever)?.socketId).emit('private message', {
           sender:{displayName, avatarIndex}, text
         })
       });

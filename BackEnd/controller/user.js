@@ -28,8 +28,8 @@ export const getUser = async (req, res) => {
   export const editProfile = async (req, res) => {
     try {
       const { uid } = req.user; // assumes auth middleware has set req.user
-      const { displayName, avatarIndex } = req.body
-      const user = await User.findByIdAndUpdate(uid,{displayName, avatarIndex});
+      const { displayName, avatarIndex, themeIndex } = req.body
+      const user = await User.findByIdAndUpdate(uid,{displayName, avatarIndex, themeIndex});
       if (!user) {
         return res.status(404).json({ message: 'User not found' });
       }

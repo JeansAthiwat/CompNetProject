@@ -30,10 +30,14 @@ const GroupCreationForm = () => {
     }
 
     return (
-        <form onSubmit={handleSubmit}>
-            <label className="text-2xl font-bold">Group name</label>
-            <input defaultValue="Back Bender" ref={groupNameRef} className="bg-white" />
-            <button className="bg-primary-stroke px-2 py-2 rounded-full text-white font-bold">Create</button>
+        <form onSubmit={handleSubmit} className="p-3 w-full items-center flex flex-col gap-3 justify-center  m-auto p-3">
+            <label className="text-2xl font-bold ">Group name</label>
+            <input defaultValue="Back Bender" ref={groupNameRef} className="bg-white text-black" />
+            <div className="flex flex-row gap-2">
+                <button  type="sumbit" className="bg-primary-stroke px-2 py-2 rounded-full text-secondary-bg font-bold">Create</button>
+                <button  type="button" className="bg-primary-stroke px-2 py-2 rounded-full text-secondary-bg font-bold">Cancel</button>
+            </div>
+            
         </form>
     )
 }

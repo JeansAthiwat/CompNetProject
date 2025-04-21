@@ -53,7 +53,8 @@ const Register = () => {
 
     const avatarOptions = Array.from({ length: 5 }, (_, i) => i);
     return (
-        <div className="min-h-screen flex items-center justify-center bg-background px-4">
+        <div className="min-h-screen flex items-center justify-center px-4" 
+        style={{ background: 'var(--color-primary-bg)' }}>
             <div className="paper-effect w-full max-w-md p-8 space-y-8 bg-white rounded-2xl shadow-2xl">
                 <div className="text-center space-y-2">
                     <Heart className="mx-auto text-primary w-12 h-12" />

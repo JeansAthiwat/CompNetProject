@@ -158,7 +158,7 @@ const ChatRoom = () => {
                             <button className="back-button" onClick={goBack}>←</button>
                             <h2 className="pl-2">{roomName}</h2>
             </div>
-            <div className=" flex flex-row h-[100vh]">
+            <div className=" flex flex-row h-[80vh]">
                 <div>
                 <div className="h-[80vh] chat-body w-[80vw] grow py-5 pr-5 pl-15 overflow-y-scroll scroll-smooth flex flex-col"  ref={chatContainerRef}>
                     {
@@ -197,13 +197,13 @@ const ChatRoom = () => {
                 </div>
 
                 <div className="chat-footer flex justify-between w-[80vw] mb-4 pl-15 mt-5">
-                    <button className="footer-button bg-primary-stroke text-white text-xl font-bold py-2 px-4 rounded-full">Giphy</button>
+                    {/* <button className="footer-button bg-primary-stroke text-white text-xl font-bold py-2 px-4 rounded-full">Giphy</button> */}
                     <input onKeyDown={(e) => {
                             if (e.key === 'Enter') {
                               sendMsg();
                             }
                         }}ref={inputRef} type="text" className="chat-input bg-secondary-bg py-2 px-4 rounded-2xl grow mx-2 text-xl font-bold" />
-                    <button className="footer-button bg-primary-stroke text-white text-xl font-bold py-2 px-4 rounded-full"
+                    <button className="footer-button bg-primary-stroke text-secondary-bg text-xl font-bold py-2 px-4 rounded-full"
                         onClick={sendMsg}
                     >
                         Send
