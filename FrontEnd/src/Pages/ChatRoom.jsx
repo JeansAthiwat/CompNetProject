@@ -16,6 +16,8 @@ const ChatRoom = () => {
     const [messages, setMessages] = useState([])
     const inputRef = useRef()
     const chatContainerRef = useRef()
+    const [isTyping, setIsTyping] = useState(false)
+    let typingTimeout = useRef(null);
     const { uid }= jwtDecode(token)
 
     
@@ -76,10 +78,44 @@ const ChatRoom = () => {
             }
         }
 
+        const handleTyping = ({sender} = {}) => {
+            if(sender) {
+                if(sender===to) {
+                    console.log("Someone in private is typing")
+                    setIsTyping(true);
+
+                    if (typingTimeout.current) {
+                    clearTimeout(typingTimeout.current);
+                    }
+                
+                    // User stops typing after 1.5 seconds of no input
+                    typingTimeout.current = setTimeout(() => {
+                        console.log("not typing anymore")
+                    setIsTyping(false);
+                    }, 1500)
+                }
+            } else {
+                console.log("Someone in group is typing")
+                setIsTyping(true);
+
+                if (typingTimeout.current) {
+                  clearTimeout(typingTimeout.current);
+                }
+              
+                // User stops typing after 1.5 seconds of no input
+                typingTimeout.current = setTimeout(() => {
+                    console.log("not typing anymore")
+                  setIsTyping(false);
+                }, 1500);
+            }
+        }
+
+        socket.on("typing", handleTyping)   
         if(isPrivate) {
-            socket.on("private message", handlePrivateMessage);       
+            socket.on("private message", handlePrivateMessage);    
             return () => {
-              socket.off("private message", handlePrivateMessage);
+                socket.off("private message", handlePrivateMessage);
+                socket.off("typing", handleTyping)   
             };
         } else {
             socket.emit("enter room", {roomId:to, user})
@@ -91,6 +127,7 @@ const ChatRoom = () => {
                 socket.off("group message", handlePrivateMessage);
                 socket.off("join group",updateGroupMemberJoin)
                 socket.off("leave group",updateGroupMemberLeave)
+                socket.off("typing", handleTyping)   
               };
         }
       
@@ -151,6 +188,14 @@ const ChatRoom = () => {
         inputRef.current.value = ""
     }
 
+    const sendTyping = () => {
+        if(isPrivate) {
+            socket.emit("private typing", {sender:uid, reciever:to})
+        } else {
+            socket.emit("group typing", {cid:convo._id})
+        }
+    }
+
     return (
         <>
             {convo && socket && <>
@@ -160,7 +205,7 @@ const ChatRoom = () => {
             </div>
             <div className=" flex flex-row h-[80vh]">
                 <div>
-                <div className="h-[80vh] chat-body w-[80vw] grow py-5 pr-5 pl-15 overflow-y-scroll scroll-smooth flex flex-col"  ref={chatContainerRef}>
+                <div className="h-[75vh] chat-body w-[80vw] grow py-5 pr-5 pl-15 overflow-y-scroll scroll-smooth flex flex-col"  ref={chatContainerRef}>
                     {
                         messages.map((msg,index) => 
                             msg.sender._id == uid ?
@@ -196,14 +241,19 @@ const ChatRoom = () => {
                     }
                 </div>
 
-                <div className="chat-footer flex justify-between w-[80vw] mb-4 pl-15 mt-5">
-                    {/* <button className="footer-button bg-primary-stroke text-white text-xl font-bold py-2 px-4 rounded-full">Giphy</button> */}
+                <div className={`flex justify-center h-[5vh]`}>
+                    <h1 className={`text-xl font-bold ${isTyping?"":"hidden"}`}>Someone is typing...</h1>
+                </div>
+                <div className="chat-footer flex justify-between w-[80vw] mb-4 pl-15">
+                    <button className="footer-button bg-primary-stroke text-white text-xl font-bold py-2 px-4 rounded-full">Giphy</button>
                     <input onKeyDown={(e) => {
                             if (e.key === 'Enter') {
                               sendMsg();
                             }
-                        }}ref={inputRef} type="text" className="chat-input bg-secondary-bg py-2 px-4 rounded-2xl grow mx-2 text-xl font-bold" />
-                    <button className="footer-button bg-primary-stroke text-secondary-bg text-xl font-bold py-2 px-4 rounded-full"
+                        }}
+                        onChange={sendTyping}
+                        ref={inputRef} type="text" className="chat-input bg-secondary-bg py-2 px-4 rounded-2xl grow mx-2 text-xl font-bold" />
+                    <button className="footer-button bg-primary-stroke text-white text-xl font-bold py-2 px-4 rounded-full"
                         onClick={sendMsg}
                     >
                         Send
