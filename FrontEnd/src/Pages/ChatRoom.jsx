@@ -245,7 +245,7 @@ const ChatRoom = () => {
                     <h1 className={`text-xl font-bold ${isTyping?"":"hidden"}`}>Someone is typing...</h1>
                 </div>
                 <div className="chat-footer flex justify-between w-[80vw] mb-4 pl-15">
-                    <button className="footer-button bg-primary-stroke text-white text-xl font-bold py-2 px-4 rounded-full">Giphy</button>
+                    {/* <button className="footer-button bg-primary-stroke text-white text-xl font-bold py-2 px-4 rounded-full">Giphy</button> */}
                     <input onKeyDown={(e) => {
                             if (e.key === 'Enter') {
                               sendMsg();
