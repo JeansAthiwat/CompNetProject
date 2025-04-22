@@ -3,8 +3,6 @@ import { useNavigate } from "react-router-dom";
 import { useAuth } from "../Contexts/AuthContext";
 
 export default function GroupsList({ groups, onGroupFocus }) {
-    const navigate = useNavigate()
-    const {user} = useAuth()
     const [focusedId, setFocusedId] = useState(null)
 
     const handleClick = (group) => {
@@ -27,14 +25,9 @@ export default function GroupsList({ groups, onGroupFocus }) {
             {groups.map((group) => (
               <div
                 key={group.id}
-                className={`flex flex-row h-40 w-full p-10 gap-4 items-center border-primary-stroke border-2 hover:bg-secondary-bg/50 rounded-full ${group.id===focusedId?"bg-secondary-bg/60":"bg-secondary-bg"}`}
+                className={`flex flex-row h-40 w-full p-10 gap-4 items-center border-primary-stroke hover:bg-secondary-bg/50 rounded-full ${group.id===focusedId?"bg-secondary-bg/60 border-4":"bg-secondary-bg border-2"}`}
                 onClick={() => {handleClick(group)}}
               >
-                <img
-                  src="https://encrypted-tbn2.gstatic.com/images?q=tbn:ANd9GcSMDqhEJR6Udf0kawcsUab8zTjta2rfznDcUyzGuPe1-Gh81zPBjX9_fQjEl585aZQqRuE1Lif0d0rUjwj3pkviGygMizp3mKTc-spwIQ"
-                  alt="user-profile"
-                  className="w-20 h-20 rounded-full"
-                />
                 <h3 className="text-3xl font-bold truncate">{group.name}</h3>
               </div>
             ))}

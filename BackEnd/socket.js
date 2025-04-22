@@ -67,11 +67,11 @@ export const setUpSocket = (server) => {
       })
 
       socket.on("private typing", ({sender, reciever}) => {
-        io.to(onlineUsers.get(reciever).socketId).emit('typing',{sender})
+        io.to(onlineUsers.get(reciever)?.socketId).emit('typing',{sender, displayName})
       })
 
       socket.on("group typing", ({cid}) => {
-        socket.to(cid).emit("typing")
+        socket.to(cid).emit("typing", {displayName})
       })
         
       socket.on("private message", async ({cid, sender, reciever, text}) => {

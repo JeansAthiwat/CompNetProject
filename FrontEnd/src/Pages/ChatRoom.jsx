@@ -16,8 +16,8 @@ const ChatRoom = () => {
     const [messages, setMessages] = useState([])
     const inputRef = useRef()
     const chatContainerRef = useRef()
-    const [isTyping, setIsTyping] = useState(false)
-    let typingTimeout = useRef(null);
+    const [userTyping, setUserTyping] = useState([])
+    let typingTimeout = useRef(new Map());
     const { uid }= jwtDecode(token)
 
     
@@ -78,35 +78,19 @@ const ChatRoom = () => {
             }
         }
 
-        const handleTyping = ({sender} = {}) => {
-            if(sender) {
-                if(sender===to) {
-                    console.log("Someone in private is typing")
-                    setIsTyping(true);
-
-                    if (typingTimeout.current) {
-                    clearTimeout(typingTimeout.current);
-                    }
-                
-                    // User stops typing after 1.5 seconds of no input
-                    typingTimeout.current = setTimeout(() => {
-                        console.log("not typing anymore")
-                    setIsTyping(false);
-                    }, 1500)
+        const handleTyping = ({sender, displayName} = {}) => {
+            if ((!sender) || (sender && sender === to)) {
+                // do something
+                setUserTyping((prev) => prev.includes(displayName)?prev:[...prev, displayName]);
+    
+                if (typingTimeout.current.get(displayName)) {
+                    clearTimeout(typingTimeout.current.get(displayName));
                 }
-            } else {
-                console.log("Someone in group is typing")
-                setIsTyping(true);
-
-                if (typingTimeout.current) {
-                  clearTimeout(typingTimeout.current);
-                }
-              
+            
                 // User stops typing after 1.5 seconds of no input
-                typingTimeout.current = setTimeout(() => {
-                    console.log("not typing anymore")
-                  setIsTyping(false);
-                }, 1500);
+                typingTimeout.current.set(displayName, setTimeout(() => {
+                    setUserTyping((prev) => prev.filter(dn => dn!==displayName));
+                }, 1500))
             }
         }
 
@@ -131,15 +115,12 @@ const ChatRoom = () => {
               };
         }
       
-      }, [socket]);
+      }, [socket, location.state]);
       
     
-    useEffect(() => {
-        if(!runInitRef.current) {
-            runInitRef.current = true             
-            getConvo([uid, to])
-        }
-    }, [])
+    useEffect(() => {           
+        getConvo([uid, to])
+    }, [location.state])
 
     useEffect(() => {
         if(convo) {
@@ -242,7 +223,7 @@ const ChatRoom = () => {
                 </div>
 
                 <div className={`flex justify-center h-[5vh]`}>
-                    <h1 className={`text-xl font-bold ${isTyping?"":"hidden"}`}>Someone is typing...</h1>
+                    <h1 className={`text-xl font-bold ${userTyping.length?"":"hidden"}`}>{userTyping.join(", ")} is typing...</h1>
                 </div>
                 <div className="chat-footer flex justify-between w-[80vw] mb-4 pl-15">
                     {/* <button className="footer-button bg-primary-stroke text-white text-xl font-bold py-2 px-4 rounded-full">Giphy</button> */}
