@@ -19,7 +19,7 @@ function Profile() {
     try {
       e.preventDefault();
       if (displayNameRef.current.value.trim()) {
-        const response = axios.patch('http://localhost:39189/user', {
+        const response = axios.patch(import.meta.env.VITE_BACKEND_URL+'/user', {
           displayName:displayNameRef.current.value,
           avatarIndex
         }, {
@@ -48,7 +48,7 @@ function Profile() {
 
   const handleThemeChange = async (i)=> {
     try {
-      const response = axios.patch('http://localhost:39189/user', {
+      const response = axios.patch(import.meta.env.VITE_BACKEND_URL+'/user', {
         themeIndex:i,
       }, {
         headers: {

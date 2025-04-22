@@ -27,7 +27,7 @@ const ChatRoom = () => {
         if(isPrivate) {
             // Get private chat convo
             try {
-                const response = await axios.post('http://localhost:39189/conversation/private', {
+                const response = await axios.post(import.meta.env.VITE_BACKEND_URL+'/conversation/private', {
                     participants: participants
                 }, {
                     headers: {
@@ -43,7 +43,7 @@ const ChatRoom = () => {
         } else {
             // Get group chat convo
             try{
-                const response = await axios.get(`http://localhost:39189/conversation/group/${to}`, {
+                const response = await axios.get(import.meta.env.VITE_BACKEND_URL+`/conversation/group/${to}`, {
                     headers: {
                         'Content-Type':'application/json',
                         authorization: `Bearer ${localStorage.getItem('token')}`
@@ -126,7 +126,7 @@ const ChatRoom = () => {
         if(convo) {
             const getMessages = async () => {
                 // console.log("convoId",convoId)
-                const response = await axios.get(`http://localhost:39189/message/id/${convo._id}`, {
+                const response = await axios.get(import.meta.env.VITE_BACKEND_URL+`/message/id/${convo._id}`, {
                     headers: {
                         'Content-Type':'application/json',
                         authorization:`Bearer ${localStorage.getItem('token')}`

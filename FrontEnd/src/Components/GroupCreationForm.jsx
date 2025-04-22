@@ -12,7 +12,7 @@ const GroupCreationForm = () => {
         e.preventDefault()
         // console.log(groupNameRef.current.value)
         try {
-            const response = await axios.post("http://localhost:39189/conversation/group", {
+            const response = await axios.post(import.meta.env.VITE_BACKEND_URL+"/conversation/group", {
                 groupName:groupNameRef.current.value
             }, {
                 headers: {

@@ -25,7 +25,7 @@ export default function Home() {
         e.preventDefault()
         // console.log(groupNameRef.current.value)
         try {
-            const response = await axios.post("http://localhost:39189/conversation/group", {
+            const response = await axios.post(import.meta.env.VITE_BACKEND_URL+"/conversation/group", {
                 groupName:groupNameRef.current.value
             }, {
                 headers: {
@@ -45,10 +45,17 @@ export default function Home() {
     const getChatGroups = async () => {
         try {
             setLoading(true)
-            const response = await axios.get('http://localhost:39189/conversation/group')
+            console.log(import.meta.env.VITE_BACKEND_URL+'/conversation/group')
+            const response = await axios.get(`${import.meta.env.VITE_BACKEND_URL}/conversation/group`, {
+                withCredentials: true,
+                headers: {
+                  'Accept': 'application/json'
+                }
+              });
+            console.log("kuy",response.data)
             setChatGroups(response.data.groups)
         } catch (error) {
-            console.log(error)
+            console.log("error:",error)
         } finally {
             setLoading(false)
         }
@@ -61,7 +68,7 @@ export default function Home() {
         const getOnlineUsers = async () => {
             try {
                 setLoading(true)
-                const response = await axios.get('http://localhost:39189/user/online');
+                const response = await axios.get(import.meta.env.VITE_BACKEND_URL+'/user/online');
                 setUsers(response.data.users);
                 console.dir(response.data)
                 // console.dir(user)
@@ -115,7 +122,7 @@ export default function Home() {
 
     const onLeaveGroup = async () => {
         try {
-            const response = await axios.put(`http://localhost:39189/conversation/group/leave/${focusedGroup.id}`, null,{
+            const response = await axios.put(import.meta.env.VITE_BACKEND_URL+`/conversation/group/leave/${focusedGroup.id}`, null,{
                 headers: {
                     authorization: `Bearer ${token}`
                 }
@@ -130,7 +137,7 @@ export default function Home() {
 
     const onJoinGroup = async () => {
         try {
-            const response = await axios.put(`http://localhost:39189/conversation/group/${focusedGroup.id}`, null,{
+            const response = await axios.put(import.meta.env.VITE_BACKEND_URL+`/conversation/group/${focusedGroup.id}`, null,{
                 headers: {
                     authorization: `Bearer ${token}`
                 }
